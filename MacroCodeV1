@@ -1,0 +1,237 @@
+Sub GenrePieChart()
+
+    'Declarations
+    Dim xColIndex As Integer
+    Dim xRowIndex As Integer
+    Dim TotalGenreCells As Range
+    
+    'Variables are initialized as 0 by default
+    Dim Comedy As Integer
+    Dim Thriller As Integer
+    Dim Horror As Integer
+    Dim Drama As Integer
+    Dim Documentary As Integer
+    Dim War As Integer
+    Dim Action As Integer
+    Dim SciFi As Integer
+    Dim Western As Integer
+    Dim Biography As Integer
+    Dim Animated As Integer
+    Dim Fantasy As Integer
+    Dim Romance As Integer
+    Dim Other As Integer
+    Dim DoubleGenre() As String
+    
+    'Data Selection
+    Worksheets("Movie Log").Activate
+    xIndex = 3
+    xRowIndex = Application.ActiveSheet.Cells(Rows.Count, xIndex).End(xlUp).Row
+    Range(Cells(3, xIndex), Cells(xRowIndex, xIndex)).Select
+    Set TotalGenreCells = Range(Cells(3, xIndex), Cells(xRowIndex, xIndex))
+    
+    'Genre Sorting
+    'Loops through selected cells and places and counts cells for each genre
+    Dim i As Integer
+    For i = 1 To TotalGenreCells.Rows.Count
+        
+        DoubleGenre() = Split(TotalGenreCells.Cells(i).Value, "/")
+        
+        If DoubleGenre(0) = "Comedy" Then
+            Comedy = Comedy + 1
+        ElseIf DoubleGenre(0) = "Thriller" Then
+            Thriller = Thriller + 1
+        ElseIf DoubleGenre(0) = "Horror" Then
+            Horror = Horror + 1
+        ElseIf DoubleGenre(0) = "Drama" Then
+            Drama = Drama + 1
+        ElseIf DoubleGenre(0) = "Documentary" Then
+            Documentary = Documentary + 1
+        ElseIf DoubleGenre(0) = "War" Then
+            War = War + 1
+        ElseIf DoubleGenre(0) = "Action" Then
+            Action = Action + 1
+        ElseIf DoubleGenre(0) = "SciFi" Or DoubleGenre(0) = "Sci-Fi" Then
+            SciFi = SciFi + 1
+        ElseIf DoubleGenre(0) = "Western" Then
+            Western = Western + 1
+        ElseIf DoubleGenre(0) = "Biography" Then
+            Biography = Biography + 1
+        ElseIf DoubleGenre(0) = "Animated" Or DoubleGenre(0) = "Animation" Then
+            Animated = Animated + 1
+        ElseIf DoubleGenre(0) = "Fantasy" Then
+            Fantasy = Fantasy + 1
+        ElseIf DoubleGenre(0) = "Romance" Then
+            Romance = Romance + 1
+        Else
+            Other = Other + 1
+        End If
+    Next i
+    
+    'Worksheet Selection and Data Plotting
+    Worksheets("Graphs and Stats").Activate
+    Cells(2, 2) = Comedy
+    Cells(3, 2) = Thriller
+    Cells(4, 2) = Horror
+    Cells(5, 2) = Drama
+    Cells(6, 2) = Documentary
+    Cells(7, 2) = War
+    Cells(8, 2) = Action
+    Cells(9, 2) = SciFi
+    Cells(10, 2) = Western
+    Cells(11, 2) = Biography
+    Cells(12, 2) = Animated
+    Cells(13, 2) = Fantasy
+    Cells(14, 2) = Romance
+    Cells(15, 2) = Other
+    
+    'Graph Creation
+    Range("A2:B15").Select
+    ActiveSheet.Shapes.AddChart.Select
+    ActiveChart.ChartType = xlPie 'Exploded
+    ActiveChart.SetElement (msoElementChartTitleAboveChart)
+    ActiveChart.ChartTitle.Text = "Genre Breakdown"
+
+End Sub
+
+Sub AverageRating()
+
+    'Declarations
+    Dim xColIndex As Integer
+    Dim xRowIndex As Integer
+    Dim TotalRatingCells As Range
+    Dim RatingSum As Double
+    
+    'Data Selection
+    Worksheets("Movie Log").Activate
+    xIndex = 4
+    xRowIndex = Application.ActiveSheet.Cells(Rows.Count, xIndex).End(xlUp).Row
+    Range(Cells(3, xIndex), Cells(xRowIndex, xIndex)).Select
+    Set TotalRatingCells = Range(Cells(3, xIndex), Cells(xRowIndex, xIndex))
+    
+    'Ratings Sum
+    Dim i As Integer
+    For i = 1 To TotalRatingCells.Rows.Count
+        RatingSum = TotalRatingCells.Cells(i).Value + RatingSum
+    Next i
+    
+    'Averaging
+    RatingSum = Round((RatingSum / TotalRatingCells.Rows.Count), 2)
+    
+    'Worksheet Selection and Data Plotting
+    Worksheets("Graphs and Stats").Activate
+    Cells(24, 2) = RatingSum
+    
+End Sub
+
+Sub HomeOrTheater()
+
+    'Declarations
+    Dim xColIndex As Integer
+    Dim xRowIndex As Integer
+    Dim TotalLocationCells As Range
+    Dim Home As Integer
+    Dim Theater As Integer
+    
+    'Data Selection
+    Worksheets("Movie Log").Activate
+    xIndex = 7
+    xRowIndex = Application.ActiveSheet.Cells(Rows.Count, xIndex).End(xlUp).Row
+    Range(Cells(3, xIndex), Cells(xRowIndex, xIndex)).Select
+    Set TotalLocationCells = Range(Cells(3, xIndex), Cells(xRowIndex, xIndex))
+    
+    'Home and Theater Sums
+    Dim i As Integer
+    For i = 1 To TotalLocationCells.Rows.Count
+        
+        If TotalLocationCells.Cells(i).Value = "H" Then
+            Home = Home + 1
+        ElseIf TotalLocationCells.Cells(i).Value = "T" Then
+            Theater = Theater + 1
+        End If
+    Next i
+    
+    'Worksheet Selection and Data Plotting
+    Worksheets("Graphs and Stats").Activate
+    Cells(27, 2) = Home
+    Cells(28, 2) = Theater
+
+End Sub
+
+Sub HighLowRatings()
+
+    'Declarations
+    Dim xColIndex As Integer
+    Dim xRowIndex As Integer
+    Dim TotalRatingCells As Range
+    Dim HighRating As Double
+    Dim LowRating As Double
+    LowRating = 10
+    
+    'Data Selection
+    Worksheets("Movie Log").Activate
+    xIndex = 4
+    xRowIndex = Application.ActiveSheet.Cells(Rows.Count, xIndex).End(xlUp).Row
+    Range(Cells(3, xIndex), Cells(xRowIndex, xIndex)).Select
+    Set TotalRatingCells = Range(Cells(3, xIndex), Cells(xRowIndex, xIndex))
+    
+    'Finding Min and Max
+    Dim i As Integer
+    For i = 1 To TotalRatingCells.Rows.Count
+    
+        If TotalRatingCells.Cells(i).Value > HighRating Then
+            HighRating = TotalRatingCells.Cells(i).Value
+        ElseIf TotalRatingCells.Cells(i).Value < LowRating Then
+            LowRating = TotalRatingCells.Cells(i).Value
+        End If
+    Next i
+    
+    'Worksheet Selection and Data Plotting
+    Worksheets("Graphs and Stats").Activate
+    Cells(25, 2) = HighRating
+    Cells(26, 2) = LowRating
+    
+End Sub
+
+Sub MoviesPerYear()
+    'CURRENTLY ONLY SUMMING ENTRIES WATCHED SINCE THE TIME OF THIS SPREADSHEET'S CREATION
+    
+    'Declarations
+    Dim xColIndex As Integer
+    Dim xRowIndex As Integer
+    Dim TotalDateCells As Range
+    
+    'Variables are initialized as 0 by default
+    Dim YR2016 As Integer
+    Dim YR2017 As Integer
+    Dim YR2018 As Integer
+    Dim DateSplit() As String
+    
+    'Data Selection
+    Worksheets("Movie Log").Activate
+    xIndex = 2
+    xRowIndex = Application.ActiveSheet.Cells(Rows.Count, xIndex).End(xlUp).Row
+    Range(Cells(3, xIndex), Cells(xRowIndex, xIndex)).Select
+    Set TotalDateCells = Range(Cells(3, xIndex), Cells(xRowIndex, xIndex))
+    
+    'Year Summing
+    Dim i As Integer
+    For i = 1 To TotalDateCells.Rows.Count
+        
+        DateSplit() = Split(TotalDateCells.Cells(i).Value, "/")
+        If UBound(DateSplit()) = 2 Then
+            If DateSplit(2) = "2016" Then
+                YR2016 = YR2016 + 1
+            ElseIf DateSplit(2) = "2017" Then
+                YR2017 = YR2017 + 1
+            ElseIf DateSplit(2) = "2018" Then
+                YR2018 = YR2018 + 1
+            End If
+        End If
+    Next i
+    
+    'Worksheet Selection and Data Plotting
+    Worksheets("Graphs and Stats").Activate
+    Cells(25, 5) = YR2016
+    Cells(26, 5) = YR2017
+    Cells(27, 5) = YR2018
+End Sub
