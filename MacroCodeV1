@@ -84,12 +84,25 @@ Sub GenrePieChart()
     Cells(14, 2) = Romance
     Cells(15, 2) = Other
     
+    'Deleting Old Chart
+    If ActiveSheet.ChartObjects.Count > 0 Then
+        ActiveSheet.ChartObjects.Delete
+    End If
+    
     'Graph Creation
     Range("A2:B15").Select
     ActiveSheet.Shapes.AddChart.Select
     ActiveChart.ChartType = xlPie 'Exploded
     ActiveChart.SetElement (msoElementChartTitleAboveChart)
     ActiveChart.ChartTitle.Text = "Genre Breakdown"
+    Dim ChartSize As ChartObject
+    Set ChartSizing = Worksheets("Graphs and Stats").ChartObjects(1)
+    With ChartSizing
+        .Top = Range("D2").Top
+        .Width = Range("D2:K19").Width
+        .Height = Range("D2:K19").Height
+        .Left = Range("D2").Left
+    End With
 
 End Sub
 
