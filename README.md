@@ -18,3 +18,10 @@ The workbook is comprised of five different worksheets:
 
 # Development
 The code for the workbook is comprised of five macros and two button subs. To access the macros, navigate to the  "View" tab in excel and select "Macros" in the far right. This will bring up the list of macros where the user then has access to edit or execute them. 
+
+
+# Future Improvements/Ideas (Subject to change)
+ -User form data entry
+ -Duplicate entry warnings
+ -Better filtering
+ 
