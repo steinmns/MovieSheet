@@ -22,6 +22,8 @@ The code for the workbook is comprised of five macros and two button subs. To ac
 
 # Future Improvements/Ideas (Subject to change)
  -User form data entry
+ 
  -Duplicate entry warnings
+ 
  -Better filtering
  
