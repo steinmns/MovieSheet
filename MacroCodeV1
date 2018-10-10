@@ -19,6 +19,7 @@ Sub GenrePieChart()
     Dim Animated As Integer
     Dim Fantasy As Integer
     Dim Romance As Integer
+    Dim Short As Integer
     Dim Other As Integer
     Dim DoubleGenre() As String
     
@@ -62,6 +63,8 @@ Sub GenrePieChart()
             Fantasy = Fantasy + 1
         ElseIf DoubleGenre(0) = "Romance" Then
             Romance = Romance + 1
+        ElseIf DoubleGenre(0) = "Short" Then
+            Short = Short + 1
         Else
             Other = Other + 1
         End If
@@ -82,7 +85,8 @@ Sub GenrePieChart()
     Cells(12, 2) = Animated
     Cells(13, 2) = Fantasy
     Cells(14, 2) = Romance
-    Cells(15, 2) = Other
+    Cells(15, 2) = Short
+    Cells(16, 2) = Other
     
     'Deleting Old Chart
     If ActiveSheet.ChartObjects.Count > 0 Then
@@ -99,8 +103,8 @@ Sub GenrePieChart()
     Set ChartSizing = Worksheets("Graphs and Stats").ChartObjects(1)
     With ChartSizing
         .Top = Range("D2").Top
-        .Width = Range("D2:K19").Width
-        .Height = Range("D2:K19").Height
+        .Width = Range("D2:K23").Width
+        .Height = Range("D2:K23").Height
         .Left = Range("D2").Left
     End With
 
@@ -132,7 +136,7 @@ Sub AverageRating()
     
     'Worksheet Selection and Data Plotting
     Worksheets("Graphs and Stats").Activate
-    Cells(24, 2) = RatingSum
+    Cells(25, 2) = RatingSum
     
 End Sub
 
@@ -165,8 +169,8 @@ Sub HomeOrTheater()
     
     'Worksheet Selection and Data Plotting
     Worksheets("Graphs and Stats").Activate
-    Cells(27, 2) = Home
-    Cells(28, 2) = Theater
+    Cells(28, 2) = Home
+    Cells(29, 2) = Theater
 
 End Sub
 
@@ -200,8 +204,8 @@ Sub HighLowRatings()
     
     'Worksheet Selection and Data Plotting
     Worksheets("Graphs and Stats").Activate
-    Cells(25, 2) = HighRating
-    Cells(26, 2) = LowRating
+    Cells(26, 2) = HighRating
+    Cells(27, 2) = LowRating
     
 End Sub
 
@@ -244,7 +248,7 @@ Sub MoviesPerYear()
     
     'Worksheet Selection and Data Plotting
     Worksheets("Graphs and Stats").Activate
-    Cells(25, 5) = YR2016
-    Cells(26, 5) = YR2017
-    Cells(27, 5) = YR2018
+    Cells(26, 5) = YR2016
+    Cells(27, 5) = YR2017
+    Cells(28, 5) = YR2018
 End Sub
