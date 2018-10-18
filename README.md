@@ -27,5 +27,5 @@ The code for the workbook is comprised of five macros and two button subs. To ac
  
  -Better filtering
  
- -Monthly trend analysis
+ -Monthly trend analysis (in progress)
  
