@@ -319,8 +319,8 @@ Sub MoviesPerMonth()
     
     'Worksheet Selection and Data Plotting
     Worksheets("Graphs and Stats").Activate
-    Cells(26, 8) = MaxMonthMovies
-    Cells(27, 8) = MinMonthMovies
+    Cells(26, 8) = MaxMonthMovies   'ADD FUNCTIONALITY TO PRINT THE NAME OF THE MONTH ALONG WITH THIS VALUE
+    Cells(27, 8) = MinMonthMovies   'ADD FUNCTIONALITY TO PRINT THE NAME OF THE MONTH ALONG WITH THIS VALUE
     
     'Trends
     Trend = (Months(CInt(CurrentDateSplit(0))) - Months(CInt(CurrentDateSplit(0)) - 1))
