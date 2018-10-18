@@ -7,6 +7,7 @@ AverageRating
 HomeOrTheater
 HighLowRatings
 MoviesPerYear
+MoviesPerMonth
 End Sub
 
 Private Sub Worksheet_SelectionChange(ByVal Target As Range)

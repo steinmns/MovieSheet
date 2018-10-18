@@ -252,3 +252,90 @@ Sub MoviesPerYear()
     Cells(27, 5) = YR2017
     Cells(28, 5) = YR2018
 End Sub
+
+Sub MoviesPerMonth()
+    '*DANGER* UNDER CONSTRUCTION *DANGER*
+
+    'Declarations
+    Dim xColIndex As Integer
+    Dim xRowIndex As Integer
+    Dim TotalDateCells As Range
+    
+    'Variables are initialized as 0 by default
+    Dim Months(1 To 12) As Integer
+    Dim MaxMonthMovies As Integer
+    Dim MinMonthMovies As Integer
+    Dim Trend As Integer
+    Dim CurrentDateSplit() As String
+    Dim DateSplit() As String
+    
+    'Data Selection
+    Worksheets("Movie Log").Activate
+    xIndex = 2
+    xRowIndex = Application.ActiveSheet.Cells(Rows.Count, xIndex).End(xlUp).Row
+    Range(Cells(3, xIndex), Cells(xRowIndex, xIndex)).Select
+    Set TotalDateCells = Range(Cells(3, xIndex), Cells(xRowIndex, xIndex))
+    
+    'Month Summing
+    Dim i As Integer
+    For i = 1 To TotalDateCells.Rows.Count
+        
+        CurrentDateSplit() = Split(Date, "/")
+        DateSplit() = Split(TotalDateCells.Cells(i).Value, "/")
+        
+        'Checks that the date is complete and that it is the current year
+        If UBound(DateSplit()) = 2 And DateSplit(2) = CurrentDateSplit(2) Then
+            If DateSplit(0) = "1" Then
+                Months(1) = Months(1) + 1
+            ElseIf DateSplit(0) = "2" Then
+                Months(2) = Months(2) + 1
+            ElseIf DateSplit(0) = "3" Then
+                Months(3) = Months(3) + 1
+            ElseIf DateSplit(0) = "4" Then
+                Months(4) = Months(4) + 1
+            ElseIf DateSplit(0) = "5" Then
+                Months(5) = Months(5) + 1
+            ElseIf DateSplit(0) = "6" Then
+                Months(6) = Months(6) + 1
+            ElseIf DateSplit(0) = "7" Then
+                Months(7) = Months(7) + 1
+            ElseIf DateSplit(0) = "8" Then
+                Months(8) = Months(8) + 1
+            ElseIf DateSplit(0) = "9" Then
+                Months(9) = Months(9) + 1
+            ElseIf DateSplit(0) = "10" Then
+                Months(10) = Months(10) + 1
+            ElseIf DateSplit(0) = "11" Then
+                Months(11) = Months(11) + 1
+            ElseIf DateSplit(0) = "12" Then
+                Months(12) = Months(12) + 1
+            End If
+        End If
+    Next i
+    
+    'Min and Max Months for Quantity of Movies
+    MaxMonthMovies = WorksheetFunction.Max(Months)
+    MinMonthMovies = WorksheetFunction.Min(Months)
+    
+    'Worksheet Selection and Data Plotting
+    Worksheets("Graphs and Stats").Activate
+    Cells(26, 8) = MaxMonthMovies   'ADD FUNCTIONALITY TO PRINT THE NAME OF THE MONTH ALONG WITH THIS VALUE
+    Cells(27, 8) = MinMonthMovies   'ADD FUNCTIONALITY TO PRINT THE NAME OF THE MONTH ALONG WITH THIS VALUE
+    
+    'Trends
+    Trend = (Months(CInt(CurrentDateSplit(0))) - Months(CInt(CurrentDateSplit(0)) - 1))
+    If (Months(CInt(CurrentDateSplit(0)) - 1)) = 0 Then
+        Trend = Trend * 100
+    Else
+        Trend = Trend / (Months(CInt(CurrentDateSplit(0)) - 1)) * 100
+    End If
+           
+    If Months(CurrentDateSplit(0)) > Months(CurrentDateSplit(0) - 1) Then
+        Cells(28, 8) = "Increased by " & Trend & "%"
+    ElseIf Months(CurrentDateSplit(0)) < Months(CurrentDateSplit(0) - 1) Then
+        Cells(28, 8) = "Decreased by " & Trend & "%"
+    ElseIf Months(CurrentDateSplit(0)) = Months(CurrentDateSplit(0) - 1) Then
+        Cells(28, 8) = "No change"
+    End If
+    
+End Sub
