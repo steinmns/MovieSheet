@@ -1,8 +1,10 @@
+
 Sub GenrePieChart()
 
     'Declarations
     Dim xColIndex As Integer
     Dim xRowIndex As Integer
+    'Dim ChartVal As Integer
     Dim TotalGenreCells As Range
     
     'Variables are initialized as 0 by default
@@ -88,9 +90,13 @@ Sub GenrePieChart()
     Cells(15, 2) = Short
     Cells(16, 2) = Other
     
-    'Deleting Old Chart
-    If ActiveSheet.ChartObjects.Count > 0 Then
+    'Deleting Old Genre Chart
+    If ActiveSheet.ChartObjects.Count > 0 Then 'And ActiveSheet.ChartObjects(1).Chart.Name = "Genre" Then
         ActiveSheet.ChartObjects.Delete
+        'ChartVal = 1
+    'ElseIf ActiveSheet.ChartObjects.Count > 0 And ActiveSheet.ChartObjects(2).Name = "Genre" Then
+        'ActiveSheet.ChartObjects(2).Delete
+        'ChartVal = 2
     End If
     
     'Graph Creation
@@ -99,6 +105,7 @@ Sub GenrePieChart()
     ActiveChart.ChartType = xlPie 'Exploded
     ActiveChart.SetElement (msoElementChartTitleAboveChart)
     ActiveChart.ChartTitle.Text = "Genre Breakdown"
+    ActiveChart.Parent.Name = "Genre"
     Dim ChartSize As ChartObject
     Set ChartSizing = Worksheets("Graphs and Stats").ChartObjects(1)
     With ChartSizing
@@ -211,6 +218,7 @@ End Sub
 
 Sub MoviesPerYear()
     'CURRENTLY ONLY SUMMING ENTRIES WATCHED SINCE THE TIME OF THIS SPREADSHEET'S CREATION
+    'Could (and probably should) turn this into a dynamic array
     
     'Declarations
     Dim xColIndex As Integer
@@ -263,9 +271,11 @@ Sub MoviesPerMonth()
     
     'Variables are initialized as 0 by default
     Dim Months(1 To 12) As Integer
-    Dim MaxMonthMovies As Integer
+    Dim MaxMonthMovies As Integer   'Holds the max value
     Dim MinMonthMovies As Integer
-    Dim Trend As Integer
+    Dim MaxMonth As Integer         'Holds month where max value occured
+    Dim MinMonth As Integer
+    Dim Trend As Integer            'For now, the viewing change compared to the previous month
     Dim CurrentDateSplit() As String
     Dim DateSplit() As String
     
@@ -315,12 +325,14 @@ Sub MoviesPerMonth()
     
     'Min and Max Months for Quantity of Movies
     MaxMonthMovies = WorksheetFunction.Max(Months)
+    MaxMonth = WorksheetFunction.Match(MaxMonthMovies, Months, 0)
     MinMonthMovies = WorksheetFunction.Min(Months)
-    
+    MinMonth = WorksheetFunction.Match(MinMonthMovies, Months, 0)
+        
     'Worksheet Selection and Data Plotting
     Worksheets("Graphs and Stats").Activate
-    Cells(26, 8) = MaxMonthMovies   'ADD FUNCTIONALITY TO PRINT THE NAME OF THE MONTH ALONG WITH THIS VALUE
-    Cells(27, 8) = MinMonthMovies   'ADD FUNCTIONALITY TO PRINT THE NAME OF THE MONTH ALONG WITH THIS VALUE
+    Cells(26, 8) = MonthName(MaxMonth) & " (" & MaxMonthMovies & ")"
+    Cells(27, 8) = MonthName(MinMonth) & " (" & MinMonthMovies & ")"
     
     'Trends
     Trend = (Months(CInt(CurrentDateSplit(0))) - Months(CInt(CurrentDateSplit(0)) - 1))
@@ -331,11 +343,29 @@ Sub MoviesPerMonth()
     End If
            
     If Months(CurrentDateSplit(0)) > Months(CurrentDateSplit(0) - 1) Then
-        Cells(28, 8) = "Increased by " & Trend & "%"
+        Cells(28, 8) = "+" & Trend & "% this month"
     ElseIf Months(CurrentDateSplit(0)) < Months(CurrentDateSplit(0) - 1) Then
-        Cells(28, 8) = "Decreased by " & Trend & "%"
+        Cells(28, 8) = "-" & Trend & "% this month"
     ElseIf Months(CurrentDateSplit(0)) = Months(CurrentDateSplit(0) - 1) Then
         Cells(28, 8) = "No change"
     End If
     
+    'Worksheet Selection and Data Plotting
+    'NEED TO FIGURE OUT HOW TO DELETE CHARTS SEPERATE FROM EACH OTHER INSTEAD OF DELETING BOTH AT ONCE
+    Worksheets("Graphs and Stats").Activate
+    Cells(2, 11) = Months(1)
+    Cells(3, 11) = Months(2)
+    Cells(4, 11) = Months(3)
+    Cells(5, 11) = Months(4)
+    Cells(6, 11) = Months(5)
+    Cells(7, 11) = Months(6)
+    Cells(8, 11) = Months(7)
+    Cells(9, 11) = Months(8)
+    Cells(10, 11) = Months(9)
+    Cells(11, 11) = Months(10)
+    Cells(12, 11) = Months(11)
+    Cells(13, 11) = Months(12)
+    
+    
 End Sub
+
