@@ -2,10 +2,12 @@
 Sub GenrePieChart()
 
     'Declarations
+    Dim Rng As Range
     Dim xColIndex As Integer
     Dim xRowIndex As Integer
-    'Dim ChartVal As Integer
     Dim TotalGenreCells As Range
+    Dim GenreChart As Object
+    Dim ChartName As String
     
     'Variables are initialized as 0 by default
     Dim Comedy As Integer
@@ -90,28 +92,28 @@ Sub GenrePieChart()
     Cells(15, 2) = Short
     Cells(16, 2) = Other
     
-    'Deleting Old Genre Chart
-    If ActiveSheet.ChartObjects.Count > 0 Then 'And ActiveSheet.ChartObjects(1).Chart.Name = "Genre" Then
-        ActiveSheet.ChartObjects.Delete
-        'ChartVal = 1
-    'ElseIf ActiveSheet.ChartObjects.Count > 0 And ActiveSheet.ChartObjects(2).Name = "Genre" Then
-        'ActiveSheet.ChartObjects(2).Delete
-        'ChartVal = 2
-    End If
+    For i = 1 To ActiveSheet.ChartObjects.Count
+        If ActiveSheet.ChartObjects(i).Chart.Name = "Graphs and Stats Genre" Then
+            ActiveSheet.ChartObjects("Genre").Delete
+        End If
+    Next i
     
     'Graph Creation
-    Range("A2:B15").Select
-    ActiveSheet.Shapes.AddChart.Select
-    ActiveChart.ChartType = xlPie 'Exploded
-    ActiveChart.SetElement (msoElementChartTitleAboveChart)
-    ActiveChart.ChartTitle.Text = "Genre Breakdown"
-    ActiveChart.Parent.Name = "Genre"
+    Set Rng = ActiveSheet.Range("A2:B16")
+    Set GenreChart = ActiveSheet.Shapes.AddChart
+    GenreChart.Name = "Genre"
+    With GenreChart.Chart
+        .SetSourceData Source:=Rng
+        .ChartType = xlPie
+        .SetElement (msoElementChartTitleAboveChart)
+        .ChartTitle.Text = "Genre Breakdown"
+    End With
     Dim ChartSize As ChartObject
-    Set ChartSizing = Worksheets("Graphs and Stats").ChartObjects(1)
+    Set ChartSizing = Worksheets("Graphs and Stats").ChartObjects("Genre")
     With ChartSizing
         .Top = Range("D2").Top
-        .Width = Range("D2:K23").Width
-        .Height = Range("D2:K23").Height
+        .Width = Range("D2:H23").Width
+        .Height = Range("D2:H23").Height
         .Left = Range("D2").Left
     End With
 
@@ -268,12 +270,14 @@ Sub MoviesPerMonth()
     Dim xColIndex As Integer
     Dim xRowIndex As Integer
     Dim TotalDateCells As Range
+    Dim MonthChart As Object
+    Dim Rng As Range
     
     'Variables are initialized as 0 by default
     Dim Months(1 To 12) As Integer
     Dim MaxMonthMovies As Integer   'Holds the max value
     Dim MinMonthMovies As Integer
-    Dim MaxMonth As Integer         'Holds month where max value occured
+    Dim MaxMonth As Integer         'Holds month where max value occurred
     Dim MinMonth As Integer
     Dim Trend As Integer            'For now, the viewing change compared to the previous month
     Dim CurrentDateSplit() As String
@@ -351,7 +355,6 @@ Sub MoviesPerMonth()
     End If
     
     'Worksheet Selection and Data Plotting
-    'NEED TO FIGURE OUT HOW TO DELETE CHARTS SEPERATE FROM EACH OTHER INSTEAD OF DELETING BOTH AT ONCE
     Worksheets("Graphs and Stats").Activate
     Cells(2, 11) = Months(1)
     Cells(3, 11) = Months(2)
@@ -366,6 +369,36 @@ Sub MoviesPerMonth()
     Cells(12, 11) = Months(11)
     Cells(13, 11) = Months(12)
     
+    'Deleting Old Monthly Chart
+    For i = 1 To ActiveSheet.ChartObjects.Count
+        If ActiveSheet.ChartObjects(i).Chart.Name = "Graphs and Stats Month" Then
+            ActiveSheet.ChartObjects("Month").Delete
+        End If
+    Next i
+     
+    'Graph Creation
+    Set Rng = ActiveSheet.Range("J2:K13")
+    Set MonthChart = ActiveSheet.Shapes.AddChart
+    MonthChart.Name = "Month"
+    With MonthChart.Chart
+        .SetSourceData Source:=Rng
+        .ChartType = xlLineMarkers
+        .SetElement (msoElementChartTitleAboveChart)
+        .ChartTitle.Text = "Viewing By Month"
+        .HasLegend = False
+        .Axes(xlValue, xlPrimary).HasTitle = True
+        .Axes(xlValue, xlPrimary).AxisTitle.Text = "Movies Watched"
+        .Axes(xlCategory, xlPrimary).HasTitle = True
+        .Axes(xlCategory, xlPrimary).AxisTitle.Text = "Month"
+    End With
+    
+    Dim ChartSize As ChartObject
+    Set ChartSizing = Worksheets("Graphs and Stats").ChartObjects("Month")
+    With ChartSizing
+        .Top = Range("M2").Top
+        .Width = Range("M2:U16").Width
+        .Height = Range("M2:U16").Height
+        .Left = Range("M2").Left
+    End With
     
 End Sub
-
