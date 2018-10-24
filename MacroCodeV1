@@ -1,9 +1,13 @@
+
 Sub GenrePieChart()
 
     'Declarations
+    Dim Rng As Range
     Dim xColIndex As Integer
     Dim xRowIndex As Integer
     Dim TotalGenreCells As Range
+    Dim GenreChart As Object
+    Dim ChartName As String
     
     'Variables are initialized as 0 by default
     Dim Comedy As Integer
@@ -88,23 +92,28 @@ Sub GenrePieChart()
     Cells(15, 2) = Short
     Cells(16, 2) = Other
     
-    'Deleting Old Chart
-    If ActiveSheet.ChartObjects.Count > 0 Then
-        ActiveSheet.ChartObjects.Delete
-    End If
+    For i = 1 To ActiveSheet.ChartObjects.Count
+        If ActiveSheet.ChartObjects(i).Chart.Name = "Graphs and Stats Genre" Then
+            ActiveSheet.ChartObjects("Genre").Delete
+        End If
+    Next i
     
     'Graph Creation
-    Range("A2:B15").Select
-    ActiveSheet.Shapes.AddChart.Select
-    ActiveChart.ChartType = xlPie 'Exploded
-    ActiveChart.SetElement (msoElementChartTitleAboveChart)
-    ActiveChart.ChartTitle.Text = "Genre Breakdown"
+    Set Rng = ActiveSheet.Range("A2:B16")
+    Set GenreChart = ActiveSheet.Shapes.AddChart
+    GenreChart.Name = "Genre"
+    With GenreChart.Chart
+        .SetSourceData Source:=Rng
+        .ChartType = xlPie
+        .SetElement (msoElementChartTitleAboveChart)
+        .ChartTitle.Text = "Genre Breakdown"
+    End With
     Dim ChartSize As ChartObject
-    Set ChartSizing = Worksheets("Graphs and Stats").ChartObjects(1)
+    Set ChartSizing = Worksheets("Graphs and Stats").ChartObjects("Genre")
     With ChartSizing
         .Top = Range("D2").Top
-        .Width = Range("D2:K23").Width
-        .Height = Range("D2:K23").Height
+        .Width = Range("D2:H23").Width
+        .Height = Range("D2:H23").Height
         .Left = Range("D2").Left
     End With
 
@@ -211,6 +220,7 @@ End Sub
 
 Sub MoviesPerYear()
     'CURRENTLY ONLY SUMMING ENTRIES WATCHED SINCE THE TIME OF THIS SPREADSHEET'S CREATION
+    'Could (and probably should) turn this into a dynamic array
     
     'Declarations
     Dim xColIndex As Integer
@@ -260,12 +270,16 @@ Sub MoviesPerMonth()
     Dim xColIndex As Integer
     Dim xRowIndex As Integer
     Dim TotalDateCells As Range
+    Dim MonthChart As Object
+    Dim Rng As Range
     
     'Variables are initialized as 0 by default
     Dim Months(1 To 12) As Integer
-    Dim MaxMonthMovies As Integer
+    Dim MaxMonthMovies As Integer   'Holds the max value
     Dim MinMonthMovies As Integer
-    Dim Trend As Integer
+    Dim MaxMonth As Integer         'Holds month where max value occurred
+    Dim MinMonth As Integer
+    Dim Trend As Integer            'For now, the viewing change compared to the previous month
     Dim CurrentDateSplit() As String
     Dim DateSplit() As String
     
@@ -315,12 +329,14 @@ Sub MoviesPerMonth()
     
     'Min and Max Months for Quantity of Movies
     MaxMonthMovies = WorksheetFunction.Max(Months)
+    MaxMonth = WorksheetFunction.Match(MaxMonthMovies, Months, 0)
     MinMonthMovies = WorksheetFunction.Min(Months)
-    
+    MinMonth = WorksheetFunction.Match(MinMonthMovies, Months, 0)
+        
     'Worksheet Selection and Data Plotting
     Worksheets("Graphs and Stats").Activate
-    Cells(26, 8) = MaxMonthMovies   'ADD FUNCTIONALITY TO PRINT THE NAME OF THE MONTH ALONG WITH THIS VALUE
-    Cells(27, 8) = MinMonthMovies   'ADD FUNCTIONALITY TO PRINT THE NAME OF THE MONTH ALONG WITH THIS VALUE
+    Cells(26, 8) = MonthName(MaxMonth) & " (" & MaxMonthMovies & ")"
+    Cells(27, 8) = MonthName(MinMonth) & " (" & MinMonthMovies & ")"
     
     'Trends
     Trend = (Months(CInt(CurrentDateSplit(0))) - Months(CInt(CurrentDateSplit(0)) - 1))
@@ -331,11 +347,58 @@ Sub MoviesPerMonth()
     End If
            
     If Months(CurrentDateSplit(0)) > Months(CurrentDateSplit(0) - 1) Then
-        Cells(28, 8) = "Increased by " & Trend & "%"
+        Cells(28, 8) = "+" & Trend & "% this month"
     ElseIf Months(CurrentDateSplit(0)) < Months(CurrentDateSplit(0) - 1) Then
-        Cells(28, 8) = "Decreased by " & Trend & "%"
+        Cells(28, 8) = "-" & Trend & "% this month"
     ElseIf Months(CurrentDateSplit(0)) = Months(CurrentDateSplit(0) - 1) Then
         Cells(28, 8) = "No change"
     End If
+    
+    'Worksheet Selection and Data Plotting
+    Worksheets("Graphs and Stats").Activate
+    Cells(2, 11) = Months(1)
+    Cells(3, 11) = Months(2)
+    Cells(4, 11) = Months(3)
+    Cells(5, 11) = Months(4)
+    Cells(6, 11) = Months(5)
+    Cells(7, 11) = Months(6)
+    Cells(8, 11) = Months(7)
+    Cells(9, 11) = Months(8)
+    Cells(10, 11) = Months(9)
+    Cells(11, 11) = Months(10)
+    Cells(12, 11) = Months(11)
+    Cells(13, 11) = Months(12)
+    
+    'Deleting Old Monthly Chart
+    For i = 1 To ActiveSheet.ChartObjects.Count
+        If ActiveSheet.ChartObjects(i).Chart.Name = "Graphs and Stats Month" Then
+            ActiveSheet.ChartObjects("Month").Delete
+        End If
+    Next i
+     
+    'Graph Creation
+    Set Rng = ActiveSheet.Range("J2:K13")
+    Set MonthChart = ActiveSheet.Shapes.AddChart
+    MonthChart.Name = "Month"
+    With MonthChart.Chart
+        .SetSourceData Source:=Rng
+        .ChartType = xlLineMarkers
+        .SetElement (msoElementChartTitleAboveChart)
+        .ChartTitle.Text = "Viewing By Month"
+        .HasLegend = False
+        .Axes(xlValue, xlPrimary).HasTitle = True
+        .Axes(xlValue, xlPrimary).AxisTitle.Text = "Movies Watched"
+        .Axes(xlCategory, xlPrimary).HasTitle = True
+        .Axes(xlCategory, xlPrimary).AxisTitle.Text = "Month"
+    End With
+    
+    Dim ChartSize As ChartObject
+    Set ChartSizing = Worksheets("Graphs and Stats").ChartObjects("Month")
+    With ChartSizing
+        .Top = Range("M2").Top
+        .Width = Range("M2:U16").Width
+        .Height = Range("M2:U16").Height
+        .Left = Range("M2").Left
+    End With
     
 End Sub
